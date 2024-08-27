@@ -1,0 +1,60 @@
+"use client"
+
+import { useState } from "react"
+import { ControllerRenderProps } from "react-hook-form"
+import { Eye, EyeOff } from "lucide-react"
+
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
+interface PasswordInputProps {
+  isSubmitting: boolean
+  field:
+    | ControllerRenderProps<
+        {
+          email: string
+          password: string
+        },
+        "password"
+      >
+    | ControllerRenderProps<
+        {
+          email: string
+          password: string
+          name: string
+          phone: string
+        },
+        "password"
+      >
+}
+
+export function PasswordInput({
+  isSubmitting,
+  field,
+}: PasswordInputProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+
+  return (
+    <div className="relative flex items-center justify-between">
+      <Input
+        className="pr-11"
+        type={showPassword ? "text" : "password"}
+        placeholder="••••••••••"
+        disabled={isSubmitting}
+        {...field}
+      />
+      <Button
+        variant="ghost"
+        type="button"
+        onClick={() => setShowPassword((current) => !current)}
+        className="absolute right-1 size-8 hover:bg-transparent"
+      >
+        {showPassword ? (
+          <EyeOff className="shrink-0" />
+        ) : (
+          <Eye className="shrink-0" />
+        )}
+      </Button>
+    </div>
+  )
+}
