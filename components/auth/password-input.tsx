@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 
 interface PasswordInputProps {
   isSubmitting: boolean
+  variant?: "default" | "largeRounded"
   field:
     | ControllerRenderProps<
         {
@@ -30,6 +31,7 @@ interface PasswordInputProps {
 
 export function PasswordInput({
   isSubmitting,
+  variant = "default",
   field,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -37,9 +39,10 @@ export function PasswordInput({
   return (
     <div className="relative flex items-center justify-between">
       <Input
+        variant={variant}
         className="pr-11"
         type={showPassword ? "text" : "password"}
-        placeholder="••••••••••"
+        placeholder="8+ caracteres"
         disabled={isSubmitting}
         {...field}
       />

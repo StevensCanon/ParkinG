@@ -5,10 +5,15 @@ import { signIn, signOut } from "@/auth"
 import { AuthError } from "next-auth"
 import bcrypt from "bcryptjs"
 
-import { LoginFormSchema, RegisterFormSchema } from "@/schemas/auth"
-import { getUserByEmail } from "../user"
+import {
+  CompleteRegisterFormSchema,
+  LoginFormSchema,
+  RegisterFormSchema,
+} from "@/schemas/auth"
+import { getUserByEmail } from "@/actions/user"
 import { db } from "@/lib/db"
 import { DEFAULT_AUTH_REDIRECT } from "@/routes"
+import { currentUser } from "@/lib/auth-user"
 
 export async function login(credentials: z.infer<typeof LoginFormSchema>) {
   const result = LoginFormSchema.safeParse(credentials)
@@ -84,6 +89,40 @@ export async function register(
     }
 
     throw error
+  }
+}
+
+export async function completeRegistration(
+  credentials: z.infer<typeof CompleteRegisterFormSchema>
+) {
+  const loggedUser = await currentUser()
+  const result = CompleteRegisterFormSchema.safeParse(credentials)
+
+  if (result.error) {
+    return { error: "Datos invalidos!" }
+  }
+
+  const { name, phone, email, password } = result.data
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const existingUser = await getUserByEmail(email)
+
+    if (!existingUser) {
+      return { error: "El usuario no existe!" }
+    }
+
+    await db.user.update({
+      where: { id: loggedUser?.id },
+      data: {
+        name,
+        phone,
+        password: hashedPassword,
+      },
+    })
+  } catch (error) {
+    return { error: "Algo salio mal en el proceso." }
   }
 }
 

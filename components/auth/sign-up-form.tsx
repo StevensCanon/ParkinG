@@ -76,6 +76,7 @@ export function SignUpForm() {
                   <FormLabel>Nombre</FormLabel>
                   <FormControl>
                     <Input
+                      variant="largeRounded"
                       placeholder="Jhon Doe"
                       disabled={isSubmitting}
                       {...field}
@@ -93,6 +94,7 @@ export function SignUpForm() {
                   <FormLabel>Teléfono</FormLabel>
                   <FormControl>
                     <Input
+                      variant="largeRounded"
                       type="tel"
                       placeholder="Numero de teléfono"
                       disabled={isSubmitting}
@@ -111,6 +113,7 @@ export function SignUpForm() {
                   <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
                     <Input
+                      variant="largeRounded"
                       type="email"
                       placeholder="ej. jhon@gmail.com"
                       disabled={isSubmitting}
@@ -128,7 +131,11 @@ export function SignUpForm() {
                 <FormItem>
                   <FormLabel>Contraseña</FormLabel>
                   <FormControl>
-                    <PasswordInput field={field} isSubmitting={isSubmitting} />
+                    <PasswordInput
+                      variant="largeRounded"
+                      field={field}
+                      isSubmitting={isSubmitting}
+                    />
                   </FormControl>
                   <FormDescription className="text-[13.5px]">
                     La contraseña debe tener un mínimo de 8 caracteres,
