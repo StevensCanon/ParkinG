@@ -2,6 +2,8 @@ import { redirect } from "next/navigation"
 
 import { getUserById } from "@/actions/user"
 import { currentUser } from "@/lib/auth-user"
+import { DesktopSidebar } from "@/components/dashboard/navigation/desktop-sidebar"
+import { Navbar } from "@/components/dashboard/navigation/navbar"
 
 export default async function DashboardLayout({
   children,
@@ -18,5 +20,15 @@ export default async function DashboardLayout({
     redirect("/auth/complete")
   }
 
-  return <div>{children}</div>
+  return (
+    <div className="flex h-full">
+      <div className="hidden lg:block">
+        <DesktopSidebar />
+      </div>
+      <div className="flex flex-col size-full">
+        <Navbar />
+        <main className="flex-1 lg:p-6 p-4 overflow-y-auto">{children}</main>
+      </div>
+    </div>
+  )
 }
