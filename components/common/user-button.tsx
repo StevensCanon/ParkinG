@@ -1,4 +1,6 @@
-import UserAvatar from "@/components/common/user-avatar"
+import Link from "next/link"
+import { UserRound } from "lucide-react"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,9 +8,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Card, CardContent } from "../ui/card"
+import { UserAvatar } from "@/components/common/user-avatar"
 import { currentUser } from "@/lib/auth-user"
-import { SettingsIcon, UserRound } from "lucide-react"
 
 interface UserButtonProps {
   className?: string
@@ -44,14 +45,12 @@ export async function UserButton({ className }: UserButtonProps) {
         </div>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer py-2">
-          <UserRound className="size-4 mr-2" />
-          Perfil
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer py-2">
-          <SettingsIcon className="size-4 mr-2" />
-          Account settings
-        </DropdownMenuItem>
+        <Link href="/dashboard/profile">
+          <DropdownMenuItem className="cursor-pointer py-2">
+            <UserRound className="size-4 mr-2" />
+            Perfil
+          </DropdownMenuItem>
+        </Link>
       </DropdownMenuContent>
     </DropdownMenu>
   )

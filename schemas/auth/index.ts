@@ -1,6 +1,5 @@
+import { phoneRegex } from "@/constants"
 import { z } from "zod"
-
-const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/
 
 export const LoginFormSchema = z.object({
   email: z

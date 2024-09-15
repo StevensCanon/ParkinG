@@ -6,6 +6,7 @@ import { Eye, EyeOff } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface PasswordInputProps {
   isSubmitting: boolean
@@ -27,12 +28,30 @@ interface PasswordInputProps {
         },
         "password"
       >
+    | ControllerRenderProps<
+        {
+          oldPassword: string
+          newPassword: string
+        },
+        "oldPassword"
+      >
+    | ControllerRenderProps<
+        {
+          oldPassword: string
+          newPassword: string
+        },
+        "newPassword"
+      >
+  className?: string
+  showPlaceholder?: boolean
 }
 
 export function PasswordInput({
   isSubmitting,
   variant = "default",
   field,
+  className,
+  showPlaceholder = true,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
@@ -40,9 +59,9 @@ export function PasswordInput({
     <div className="relative flex items-center justify-between">
       <Input
         variant={variant}
-        className="pr-11"
+        className={cn("pr-11", className)}
         type={showPassword ? "text" : "password"}
-        placeholder="8+ caracteres"
+        placeholder={showPlaceholder ? "8+ caracteres" : ""}
         disabled={isSubmitting}
         {...field}
       />

@@ -1,14 +1,18 @@
-"use client";
+"use client"
 
-import { Menu } from "lucide-react";
+import { Menu } from "lucide-react"
 
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { DesktopSidebar } from "./desktop-sidebar";
+import { Button } from "@/components/ui/button"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { DesktopSidebar } from "@/components/dashboard/navigation/desktop-sidebar"
 
 export function MobileSidebar() {
-  // const { open, onSidebarClose, onSidebarOpen } = useMobileSidebarStore();
-
   return (
     <div className="lg:hidden">
       <Sheet>
@@ -18,9 +22,11 @@ export function MobileSidebar() {
           </Button>
         </SheetTrigger>
         <SheetContent className="w-[280px] p-0" side="left">
+          <SheetDescription className="hidden" aria-readonly></SheetDescription>
+          <SheetTitle className="hidden" aria-readonly></SheetTitle>
           <DesktopSidebar mobileItems />
         </SheetContent>
       </Sheet>
     </div>
-  );
+  )
 }

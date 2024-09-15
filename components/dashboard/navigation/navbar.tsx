@@ -1,6 +1,6 @@
 import { ModeToggle } from "@/components/common/mode-toggle"
 import { UserButton } from "@/components/common/user-button"
-import { MobileSidebar } from "./mobile-sidebar"
+import { MobileSidebar } from "@/components/dashboard/navigation/mobile-sidebar"
 
 export async function Navbar() {
   return (

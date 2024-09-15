@@ -5,6 +5,8 @@ import {
   ChartColumnBig,
 } from "lucide-react"
 
+export const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/
+
 export const employeeRoutes = [
   {
     label: "Mensuales",
