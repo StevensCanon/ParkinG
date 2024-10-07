@@ -2,11 +2,10 @@
 
 import { z } from "zod"
 import { toast } from "sonner"
-import { ChangeEvent, useState } from "react"
-import { Loader2, Pencil, User as UserIcon } from "lucide-react"
+import { useState } from "react"
+import { Loader2, Pencil } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Image from "next/image"
 import { User } from "@prisma/client"
 
 import { Button } from "@/components/ui/button"
@@ -29,7 +28,7 @@ import { Input } from "@/components/ui/input"
 import { UserDataSchema } from "@/schemas/user"
 import { updateUserProfile } from "@/actions/profile-user"
 import { Label } from "@/components/ui/label"
-import { updateProfileImage } from "@/actions/uploadthing"
+import UploadImageButton from "./upload-image-button"
 
 interface GeneralInfoProps {
   user: User
@@ -37,8 +36,6 @@ interface GeneralInfoProps {
 
 export function GeneralInfo({ user }: GeneralInfoProps) {
   const [edit, setEdit] = useState<boolean>(false)
-  const [imageSrc, setImageSrc] = useState<string | null>(null)
-  const [file, setFile] = useState<File | null>(null)
 
   const form = useForm<z.infer<typeof UserDataSchema>>({
     resolver: zodResolver(UserDataSchema),
@@ -53,24 +50,7 @@ export function GeneralInfo({ user }: GeneralInfoProps) {
 
   const onSubmit = async (values: z.infer<typeof UserDataSchema>) => {
     try {
-      let newImageUrl: string = user?.image!
-
-      if (file) {
-        const formData = new FormData()
-        formData.append("image", file)
-
-        const response = await updateProfileImage(formData)
-
-        if (response?.success && response.imageUrl) {
-          newImageUrl = response.imageUrl
-        }
-
-        if (!response?.success) {
-          return toast.error("Algo salió mal al subir la imagen.")
-        }
-      }
-
-      const response = await updateUserProfile(values, newImageUrl)
+      const response = await updateUserProfile(values)
 
       if (response.error) {
         toast.error(response.error)
@@ -78,31 +58,10 @@ export function GeneralInfo({ user }: GeneralInfoProps) {
 
       if (response.success) {
         setEdit(false)
-        setImageSrc(null)
         toast.success(response.success)
       }
     } catch (error) {
       toast.error("Algo salió mal!")
-    }
-  }
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0]
-
-    if (file) {
-      const maxSizeInBytes = 1 * 1024 * 1024 // Tamaño máximo de la imagen 4MB
-      if (file.size > maxSizeInBytes) {
-        setImageSrc(null)
-        toast.error(
-          "La imagen seleccionada excede el tamaño máximo permitido de 4MB."
-        )
-        return
-      }
-
-      setFile(file)
-
-      const src = URL.createObjectURL(file)
-      setImageSrc(src)
     }
   }
 
@@ -130,48 +89,8 @@ export function GeneralInfo({ user }: GeneralInfoProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="space-y-4">
-              {edit && (
-                <div className="w-[140px] h-[140px] mx-auto rounded-full border mb-3">
-                  <label
-                    htmlFor="fileInput"
-                    className="relative flex items-center justify-center size-full rounded-full cursor-pointer"
-                  >
-                    <input
-                      id="fileInput"
-                      name="file"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleChange}
-                      hidden
-                    />
-                    {user?.image && !imageSrc && (
-                      <Image
-                        src={user.image}
-                        alt="image file selected"
-                        quality={20}
-                        width={180}
-                        height={180}
-                        className="object-cover size-full rounded-full"
-                      />
-                    )}
-                    {!user?.image && !imageSrc && (
-                      <div className="flex items-center justify-center size-full bg-accent-foreground/10 dark:bg-accent rounded-full">
-                        <UserIcon className="size-2/5" />
-                      </div>
-                    )}
-                    {imageSrc && (
-                      <Image
-                        src={imageSrc}
-                        alt="image file selected"
-                        quality={60}
-                        width={180}
-                        height={180}
-                        className="object-cover size-full rounded-full"
-                      />
-                    )}
-                  </label>
-                </div>
-              )}
+              {edit && <UploadImageButton userImage={user.image} />}
+
               <FormField
                 name="name"
                 control={form.control}
@@ -259,6 +178,7 @@ export function GeneralInfo({ user }: GeneralInfoProps) {
                   </p>
                 </div>
               )}
+
               {edit && (
                 <div className="pt-3 pb-2 text-end space-x-2">
                   <Button
@@ -275,7 +195,7 @@ export function GeneralInfo({ user }: GeneralInfoProps) {
                     className="font-semibold bg-main text-white hover:bg-main/90 rounded-full"
                   >
                     {isSubmitting && (
-                      <Loader2 className="h-5 w-5 mr-3 animate-spin" />
+                      <Loader2 className="size-5 mr-3 animate-spin" />
                     )}
                     Guardar cambios
                   </Button>

@@ -2,6 +2,7 @@
 
 import { FileEsque, UploadFileResult } from "uploadthing/types"
 import { utapi } from "./uploadthing"
+import { formatUrl } from "@/utils/url-format"
 
 export async function updateProfileImage(formData: FormData) {
   try {
@@ -19,5 +20,15 @@ export async function updateProfileImage(formData: FormData) {
     return { success: false, imageUrl: null }
   } catch (error) {
     console.log("Error al subir la imagen")
+  }
+}
+
+export async function deleteImage(fileUrl: string) {
+  try {
+    const formatedUrl = formatUrl(fileUrl)
+    const response = await utapi.deleteFiles(formatedUrl)
+    return response.success
+  } catch (error) {
+    console.log('Error al eliminar la imagen')
   }
 }

@@ -21,7 +21,7 @@ enum UserRole {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String?   @unique
   emailVerified DateTime?
   password      String?
   phone         String?
@@ -29,6 +29,7 @@ model User {
   role          UserRole  @default(EMPLOYEE)
 
   accounts Account[]
+  shifts   Shift[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -53,4 +54,15 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+}
+
+model Shift {
+  id String @id @default(cuid())
+
+  userId String // Relaciona con un empleado
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  dayOfWeek Int // 0: Domingo, 1: Lunes, 2: Martes, ..., 6: Sábado
+  startTime DateTime // Hora de inicio del turno
+  endTime   DateTime // Hora de fin del turno
 }

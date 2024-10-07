@@ -45,7 +45,7 @@ export async function UserButton({ className }: UserButtonProps) {
         </div>
 
         <DropdownMenuSeparator />
-        <Link href="/dashboard/profile">
+        <Link href={`/dashboard/profile/${loggedUser?.id}`}>
           <DropdownMenuItem className="cursor-pointer py-2">
             <UserRound className="size-4 mr-2" />
             Perfil

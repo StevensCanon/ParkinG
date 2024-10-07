@@ -45,6 +45,7 @@ export function DesktopSidebar({ mobileItems }: DesktopSidebarProps) {
             title="Administaración"
             className="mt-1"
             mobileItems={mobileItems}
+            onlyAdmin
           />
         </nav>
       </ScrollArea>

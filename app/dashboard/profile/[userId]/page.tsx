@@ -1,14 +1,23 @@
-import { currentUser } from "@/lib/auth-user"
+import { notFound } from "next/navigation"
+
 import { getUserById } from "@/actions/user"
 import { ChangePassword } from "@/components/employees/profile/change-password"
 import { GeneralInfo } from "@/components/employees/profile/general-info"
 import { ProfileHeader } from "@/components/employees/profile/profile-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Schedule } from "@/components/employees/profile/schedule"
+import { profileTabs } from "@/constants"
 
-export default async function ProfilePage() {
-  const loggedUser = await currentUser()
+interface ProfilePageProps {
+  params: { userId: string }
+}
 
-  const user = await getUserById(loggedUser?.id!)
+export default async function ProfilePage({ params }: ProfilePageProps) {
+  const user = await getUserById(params.userId)
+
+  if (!user) {
+    return notFound()
+  }
 
   return (
     <div className="space-y-6 xs:space-y-12 sm:px-5 md:px-8 overflow-x-hidden">
@@ -19,25 +28,17 @@ export default async function ProfilePage() {
       />
       <Tabs defaultValue="general" className="w-full">
         <TabsList className="w-full justify-start gap-2 bg-transparent p-0">
-          <TabsTrigger
-            value="general"
-            className="rounded-full  data-[state=active]:bg-accent"
-          >
-            General
-          </TabsTrigger>
-          <TabsTrigger
-            value="password"
-            className="rounded-full data-[state=active]:bg-accent"
-          >
-            Contraseña
-          </TabsTrigger>
-          <TabsTrigger
-            value="schedule"
-            className="rounded-full data-[state=active]:bg-accent"
-          >
-            Horario
-          </TabsTrigger>
+          {profileTabs.map(({ label, value }) => (
+            <TabsTrigger
+              key={label}
+              value={value}
+              className="rounded-full data-[state=active]:bg-accent"
+            >
+              {label}
+            </TabsTrigger>
+          ))}
         </TabsList>
+
         <TabsContent value="general">
           <GeneralInfo user={user!} />
         </TabsContent>
@@ -45,7 +46,7 @@ export default async function ProfilePage() {
           <ChangePassword />
         </TabsContent>
         <TabsContent value="schedule">
-          <div>Proximamente horario del empleado</div>
+          <Schedule />
         </TabsContent>
       </Tabs>
     </div>
