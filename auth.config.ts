@@ -1,12 +1,13 @@
-import Credentials from "next-auth/providers/credentials"
-import Google from "next-auth/providers/google"
-import { NextAuthConfig } from "next-auth"
-import bcrypt from "bcryptjs"
+import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+import { NextAuthConfig } from "next-auth";
+import bcrypt from "bcryptjs";
 
-import { LoginFormSchema } from "./schemas/auth"
-import { getUserByEmail } from "./actions/user"
+import { LoginFormSchema } from "./schemas/auth";
+import { getUserByEmail } from "./actions/user";
 
-export default {
+const authConfig: NextAuthConfig = {
+  secret: process.env.AUTH_SECRET, // Agrega esta línea
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -21,24 +22,26 @@ export default {
     }),
     Credentials({
       authorize: async (credentials) => {
-        const result = LoginFormSchema.safeParse(credentials)
+        const result = LoginFormSchema.safeParse(credentials);
 
         if (result.success) {
-          const { email, password } = result.data
+          const { email, password } = result.data;
 
-          const user = await getUserByEmail(email)
+          const user = await getUserByEmail(email);
 
           if (!user || !user.password) {
-            return null
+            return null;
           }
 
-          const passwordMatch = await bcrypt.compare(password, user.password)
+          const passwordMatch = await bcrypt.compare(password, user.password);
 
-          if (passwordMatch) return user
+          if (passwordMatch) return user;
         }
 
-        return null
+        return null;
       },
     }),
   ],
-} satisfies NextAuthConfig
+};
+
+export default authConfig; // Asegúrate de exportar la configuración

@@ -28,7 +28,7 @@ export default async function AuthCompletePage() {
           </h3>
           <p className="text-muted/70 dark:text-muted-foreground">
             Completa tu registro y empieza a disfrutar de una administración sin
-            complicaciones.
+            complicaciones. Hola
           </p>
         </div>
 
